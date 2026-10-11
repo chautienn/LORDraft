@@ -1,0 +1,110 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="#f5f6f3">
+    <title>Inventory | LOR</title>
+    <link rel="stylesheet" href="./styles.css">
+  </head>
+  <body>
+    <div class="app-shell">
+      <aside class="sidebar" aria-label="Main navigation">
+        <a class="brand" href="#dashboard" aria-label="LOR Inventory home">
+          <span class="brand-mark">L</span>
+          <span><strong>LOR</strong><small>COMMUNITY CARE</small></span>
+        </a>
+        <div class="nav-label">WORKSPACE</div>
+        <nav class="nav-list">
+          <a class="nav-link active" href="#dashboard" data-page="dashboard"><span class="nav-icon">◫</span>Overview</a>
+          <a class="nav-link" href="#inventory" data-page="inventory"><span class="nav-icon">▦</span>Inventory</a>
+          <a class="nav-link" href="#activity" data-page="activity"><span class="nav-icon">↕</span>Activity</a>
+          <a class="nav-link" href="#reports" data-page="reports"><span class="nav-icon">▤</span>Reports</a>
+          <a class="nav-link" href="#imports" data-page="imports"><span class="nav-icon">⇧</span>Data imports</a>
+        </nav>
+        <div class="sidebar-bottom">
+          <div class="demo-note"><span class="status-dot"></span><div><strong>Demo workspace</strong><small>Sample data only</small></div></div>
+          <button class="nav-link reset-link" id="resetDemo"><span class="nav-icon">↺</span>Reset sample data</button>
+          <div class="user-card"><span class="avatar">L</span><div><strong>LOR Staff</strong><small>Inventory team</small></div><span class="more">···</span></div>
+        </div>
+      </aside>
+
+      <main class="main">
+        <header class="topbar">
+          <div class="breadcrumb"><span>Workspace</span><span class="slash">/</span><strong id="crumbTitle">Overview</strong></div>
+          <div class="top-actions"><span class="local-badge"><i></i> Local demo</span><button class="button button-primary" id="quickAdd"><span>＋</span> Record activity</button></div>
+        </header>
+
+        <section class="page active" id="page-dashboard">
+          <div class="page-heading">
+            <div><div class="eyebrow">LOR INVENTORY</div><h1>Good morning, team <span class="wave">✳</span></h1><p>Here’s what’s happening across your community care inventory.</p></div>
+            <div class="date-control"><label for="dashboardYear">Reporting year</label><select id="dashboardYear" class="select-control year-select"></select></div>
+          </div>
+          <div class="alert-banner"><span class="alert-icon">i</span><div><strong>Demo data is stored in this browser only.</strong><span> This workspace has no connection to a production system or client records.</span></div><button class="banner-link" data-navigate="imports">Import data <span>→</span></button></div>
+          <div class="stats-grid">
+            <article class="stat-card"><div class="stat-top"><span>Items received</span><span class="stat-icon mint">↓</span></div><div class="stat-value" id="kpiReceived">—</div><div class="stat-foot"><span class="foot-dot green"></span><span id="kpiReceivedSub">units added this year</span></div></article>
+            <article class="stat-card"><div class="stat-top"><span>Items distributed</span><span class="stat-icon peach">↑</span></div><div class="stat-value" id="kpiDistributed">—</div><div class="stat-foot"><span class="foot-dot blue"></span><span id="kpiDistributedSub">units to community</span></div></article>
+            <article class="stat-card"><div class="stat-top"><span>Current stock</span><span class="stat-icon lavender">▦</span></div><div class="stat-value" id="kpiStock">—</div><div class="stat-foot"><span class="foot-dot purple"></span><span>available across all sizes</span></div></article>
+            <article class="stat-card"><div class="stat-top"><span>Estimated stock value</span><span class="stat-icon yellow">$</span></div><div class="stat-value" id="kpiValue">—</div><div class="stat-foot"><span class="foot-dot gold"></span><span>estimated, not tax advice</span></div></article>
+          </div>
+
+          <div class="content-grid">
+            <section class="panel inventory-panel">
+              <div class="panel-heading"><div><h2>Stock at a glance</h2><p>Available items by category</p></div><a href="#inventory" class="text-link">View inventory <span>→</span></a></div>
+              <div class="table-wrap"><table><thead><tr><th>ITEM</th><th>IN STOCK</th><th>UNIT VALUE</th><th>EST. VALUE</th><th>STOCK LEVEL</th></tr></thead><tbody id="overviewInventory"></tbody></table></div>
+              <div class="table-legend"><span><i class="legend-dot in-stock"></i>In stock</span><span><i class="legend-dot low-stock"></i>Low stock (&lt; 10)</span></div>
+            </section>
+            <section class="panel activity-panel">
+              <div class="panel-heading"><div><h2>Recent activity</h2><p>Latest inventory movements</p></div><a href="#activity" class="text-link">See all <span>→</span></a></div>
+              <div class="activity-list" id="recentActivity"></div>
+            </section>
+          </div>
+          <section class="formula-card"><div class="formula-symbol">ƒx</div><div><strong>How estimated values are calculated</strong><p>On-hand stock × recorded unit value. Values are estimates entered for internal tracking—not an IRS-approved valuation, tax receipt, or tax advice. See the annual report for the full calculation and assumptions.</p></div><a href="#reports" class="text-link">View report <span>→</span></a></section>
+        </section>
+
+        <section class="page" id="page-inventory">
+          <div class="page-heading compact-heading"><div><div class="eyebrow">STOCK MANAGEMENT</div><h1>Inventory</h1><p>Track what you have, by item and size.</p></div><button class="button button-primary" id="addStock"><span>＋</span> Receive items</button></div>
+          <div class="filter-bar"><label class="search-box"><span>⌕</span><input id="inventorySearch" type="search" placeholder="Search items or sizes" aria-label="Search items or sizes"></label><select id="categoryFilter" class="select-control"><option value="all">All categories</option><option value="Clothing">Clothing</option><option value="Care kit">Care kits</option><option value="Supplies">Supplies</option></select><span class="filter-count" id="inventoryCount"></span></div>
+          <section class="panel full-panel"><div class="table-wrap"><table><thead><tr><th>ITEM</th><th>CATEGORY</th><th>SIZE</th><th>IN STOCK</th><th>UNIT VALUE</th><th>EST. STOCK VALUE</th><th>STATUS</th></tr></thead><tbody id="inventoryRows"></tbody></table></div><div class="empty-state hidden" id="inventoryEmpty">No items match your search.</div></section>
+          <p class="page-footnote">Stock is calculated from all recorded receipts less distributions. Unit values are item-level estimates and can be updated by recording a new receipt.</p>
+        </section>
+
+        <section class="page" id="page-activity">
+          <div class="page-heading compact-heading"><div><div class="eyebrow">MOVEMENT LOG</div><h1>Activity</h1><p>A date-stamped record of receipts and community distributions.</p></div><button class="button button-primary" id="activityAdd"><span>＋</span> Record activity</button></div>
+          <div class="filter-bar"><select id="activityYear" class="select-control year-select"></select><label class="date-filter">From <input id="dateFrom" type="date"></label><label class="date-filter">To <input id="dateTo" type="date"></label><select id="activityType" class="select-control"><option value="all">All activity</option><option value="received">Received</option><option value="distributed">Distributed</option></select><button class="button button-light" id="clearActivityFilters">Clear filters</button><span class="filter-count" id="activityCount"></span></div>
+          <section class="panel full-panel"><div class="table-wrap"><table><thead><tr><th>DATE</th><th>TYPE</th><th>ITEM</th><th>SIZE</th><th>QUANTITY</th><th>UNIT VALUE</th><th>EST. TOTAL</th><th>DETAILS</th></tr></thead><tbody id="activityRows"></tbody></table></div><div class="empty-state hidden" id="activityEmpty">No activity found for these filters.</div></section>
+          <p class="page-footnote">Each entry is retained as an audit trail in this browser. This demo does not send activity to a server.</p>
+        </section>
+
+        <section class="page" id="page-reports">
+          <div class="page-heading compact-heading"><div><div class="eyebrow">TRANSPARENCY &amp; RECONCILIATION</div><h1>Annual report</h1><p>Review the activity and estimates behind each reporting year.</p></div><button class="button button-primary" id="exportReport">↓ Export annual report</button></div>
+          <div class="filter-bar"><label class="report-year-label">Reporting year <select id="reportYear" class="select-control year-select"></select></label><span class="filter-count">Annual totals use the activity date</span></div>
+          <div class="stats-grid report-stats"><article class="stat-card"><div class="stat-top"><span>Received in year</span><span class="stat-icon mint">↓</span></div><div class="stat-value" id="reportReceived">—</div><div class="stat-foot">units recorded as received</div></article><article class="stat-card"><div class="stat-top"><span>Distributed in year</span><span class="stat-icon peach">↑</span></div><div class="stat-value" id="reportDistributed">—</div><div class="stat-foot">units recorded as distributed</div></article><article class="stat-card"><div class="stat-top"><span>Year-end stock</span><span class="stat-icon lavender">▦</span></div><div class="stat-value" id="reportStock">—</div><div class="stat-foot">all-time receipts less distributions through year-end</div></article><article class="stat-card"><div class="stat-top"><span>Year-end stock estimate</span><span class="stat-icon yellow">$</span></div><div class="stat-value" id="reportValue">—</div><div class="stat-foot">stock × latest recorded unit value</div></article></div>
+          <section class="panel report-panel"><div class="panel-heading"><div><h2>Calculation detail</h2><p>Values are estimates based on recorded unit values, not a tax determination.</p></div></div><div class="table-wrap"><table><thead><tr><th>ITEM</th><th>SIZE</th><th>RECEIVED</th><th>DISTRIBUTED</th><th>YEAR-END QTY</th><th>UNIT VALUE</th><th>EST. VALUE</th></tr></thead><tbody id="reportRows"></tbody><tfoot id="reportFoot"></tfoot></table></div><div class="report-disclaimer"><strong>Valuation note</strong><p>Estimated value = year-end quantity × latest recorded per-item unit value available at year-end. Receipts and distributions are summarized by their recorded dates. This estimate does not determine fair market value or establish a deductible charitable contribution. Consult a qualified tax professional and retain source documentation for audit purposes.</p></div></section>
+        </section>
+
+        <section class="page" id="page-imports">
+          <div class="page-heading compact-heading"><div><div class="eyebrow">DATA CONNECTIONS</div><h1>Import data</h1><p>Bring in your records with a review step before anything is added.</p></div></div>
+          <div class="integration-grid">
+            <section class="panel integration-card"><div class="integration-icon sheets">▤</div><div class="integration-tag">PUBLIC CSV FEED</div><h2>Google Sheets</h2><p>Fetch a sheet published to the web as CSV. The sheet must be public and its URL accessible from this browser.</p><form id="sheetsForm"><label for="sheetsUrl">Published CSV URL</label><input id="sheetsUrl" type="url" placeholder="https://docs.google.com/.../pub?output=csv" required><button class="button button-primary" type="submit">Fetch sheet</button></form><div class="integration-hint">Private sheets need a secure server integration; never paste Google credentials here.</div></section>
+            <section class="panel integration-card"><div class="integration-icon jotform">↥</div><div class="integration-tag">CSV EXPORT</div><h2>Jotform &amp; other exports</h2><p>Upload a CSV export from Jotform or another spreadsheet. Review and validate every row before import.</p><label class="button button-light file-button" for="csvFile">Choose CSV file</label><input id="csvFile" class="visually-hidden" type="file" accept=".csv,text/csv"><div class="integration-hint">Jotform live API sync is not enabled in this standalone demo. API keys must stay on a secure backend.</div></section>
+          </div>
+          <section class="panel import-guide"><div><h2>Expected CSV columns</h2><p>Headers are matched case-insensitively. Required: <code>date</code>, <code>type</code> (received/distributed), <code>item</code>, and <code>quantity</code>. Optional: <code>category</code>, <code>size</code>, <code>unit_value</code>, <code>source</code>, <code>notes</code>. Quantity must be a positive whole number; unit value must be zero or greater. Distribution quantities cannot exceed available stock.</p><button id="downloadTemplate" class="text-button">Download CSV template ↓</button></div><div class="guide-badge">✓<small>Review first</small></div></section>
+          <section class="panel import-preview hidden" id="importPreview"><div class="panel-heading"><div><h2>Import review</h2><p id="previewSummary"></p></div><button class="button button-light" id="cancelImport">Cancel</button></div><div class="table-wrap"><table><thead><tr><th>ROW</th><th>DATE</th><th>TYPE</th><th>ITEM</th><th>SIZE</th><th>QTY</th><th>UNIT VALUE</th><th>VALIDATION</th></tr></thead><tbody id="previewRows"></tbody></table></div><div class="preview-actions"><span id="previewNotice"></span><button class="button button-primary" id="confirmImport" disabled>Import valid rows</button></div></section>
+          <div class="toast-region" id="importMessage" role="status" aria-live="polite"></div>
+        </section>
+      </main>
+    </div>
+
+    <dialog id="activityDialog" class="modal">
+      <form id="activityForm" method="dialog">
+        <div class="modal-heading"><div><div class="eyebrow">INVENTORY MOVEMENT</div><h2 id="dialogTitle">Record activity</h2></div><button type="button" class="close-button" id="closeDialog" aria-label="Close">×</button></div>
+        <p class="modal-intro">Use sample/test records only. Do not enter personal client information.</p>
+        <div class="form-grid"><label>Activity type<select id="entryType" required><option value="received">Received</option><option value="distributed">Distributed</option></select></label><label>Date<input id="entryDate" type="date" required></label><label class="span-two">Item name<input id="entryItem" list="itemSuggestions" placeholder="e.g. Winter coat" required maxlength="80"><datalist id="itemSuggestions"></datalist></label><label>Category<select id="entryCategory"><option>Clothing</option><option>Care kit</option><option>Supplies</option></select></label><label>Size<select id="entrySize"><option>One size</option><option>XS</option><option>S</option><option>M</option><option>L</option><option>XL</option><option>2XL</option><option>3XL</option><option>Child</option><option>Other</option></select></label><label>Quantity<input id="entryQuantity" type="number" min="1" step="1" value="1" required></label><label>Unit value ($)<input id="entryValue" type="number" min="0" step="0.01" value="0" required></label><label class="span-two">Source / distribution type<input id="entrySource" placeholder="e.g. Donation, referral, care kit" maxlength="100"></label><label class="span-two">Notes (no client-identifying information)<textarea id="entryNotes" rows="2" maxlength="300" placeholder="Optional details for the audit trail"></textarea></label></div>
+        <p class="form-error" id="formError" role="alert"></p><div class="modal-actions"><button type="button" class="button button-light" id="cancelDialog">Cancel</button><button class="button button-primary" type="submit">Save activity</button></div>
+      </form>
+    </dialog>
+    <div id="toast" class="toast" role="status" aria-live="polite"></div>
+    <script src="./app.js"></script>
+  </body>
+</html>
