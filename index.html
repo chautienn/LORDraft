@@ -63,10 +63,20 @@
         </section>
 
         <section class="page" id="page-inventory">
-          <div class="page-heading compact-heading"><div><div class="eyebrow">STOCK MANAGEMENT</div><h1>Inventory</h1><p>Track what you have, by item and size.</p></div><button class="button button-primary" id="addStock"><span>＋</span> Receive items</button></div>
-          <div class="filter-bar"><label class="search-box"><span>⌕</span><input id="inventorySearch" type="search" placeholder="Search items or sizes" aria-label="Search items or sizes"></label><select id="categoryFilter" class="select-control"><option value="all">All categories</option><option value="Clothing">Clothing</option><option value="Care kit">Care kits</option><option value="Supplies">Supplies</option></select><span class="filter-count" id="inventoryCount"></span></div>
-          <section class="panel full-panel"><div class="table-wrap"><table><thead><tr><th>ITEM</th><th>CATEGORY</th><th>SIZE</th><th>IN STOCK</th><th>UNIT VALUE</th><th>EST. STOCK VALUE</th><th>STATUS</th></tr></thead><tbody id="inventoryRows"></tbody></table></div><div class="empty-state hidden" id="inventoryEmpty">No items match your search.</div></section>
-          <p class="page-footnote">Stock is calculated from all recorded receipts less distributions. Unit values are item-level estimates and can be updated by recording a new receipt.</p>
+          <div class="page-heading compact-heading inventory-title"><div><div class="eyebrow">STOCK MANAGEMENT</div><h1>Low Country Orphan Relief Inventory</h1><p>Inventory snapshot by item for the Lowcountry location.</p></div><a class="button button-primary" id="addStock" href="https://form.jotform.com/241895593214161" target="_blank" rel="noopener noreferrer"><span>＋</span> Add inventory</a></div>
+          <div class="inventory-toolbar"><label class="search-box"><span>⌕</span><input id="inventorySearch" type="search" placeholder="Search inventory items" aria-label="Search inventory items"></label><label class="inventory-location">Location<select id="inventoryLocation" class="select-control" aria-label="Inventory location"><option value="lowcountry" selected>Lowcountry</option></select></label><span class="filter-count" id="inventoryCount"></span></div>
+          <section class="inventory-summary panel">
+            <div class="panel-heading"><div><h2>Annual Inventory Summary</h2><p id="inventorySummaryYear">Year-to-date activity and year-end estimate</p></div><a href="#reports" class="text-link" data-page="reports">View annual report <span>→</span></a></div>
+            <div class="inventory-summary-stats">
+              <div><span>Initial count</span><strong id="inventoryInitialCount">—</strong></div>
+              <div><span>Quantity added</span><strong id="inventorySummaryAdded">—</strong></div>
+              <div><span>Quantity subtracted</span><strong id="inventorySummarySubtracted">—</strong></div>
+              <div><span>Current count</span><strong id="inventorySummaryCount">—</strong></div>
+              <div><span>Current value</span><strong id="inventorySummaryValue">—</strong></div>
+            </div>
+          </section>
+          <section class="panel full-panel inventory-sheet"><div class="table-wrap"><table><thead><tr><th>ITEM</th><th>INITIAL COUNT</th><th>INITIAL VALUE</th><th>QUANTITY SUB</th><th>QUANTITY ADD</th><th>CURRENT COUNT</th><th>CURRENT VALUE</th></tr></thead><tbody id="inventoryRows"></tbody></table></div><div class="empty-state hidden" id="inventoryEmpty">No items match your search.</div></section>
+          <p class="page-footnote">Initial count and value are the opening balance at the start of the current reporting year. Current count = initial count + quantity added − quantity subtracted. Current value uses the latest recorded unit value for each item. Values are estimates, not tax advice.</p>
         </section>
 
         <section class="page" id="page-activity">

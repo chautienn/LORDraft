@@ -1,25 +1,32 @@
 (() => {
   "use strict";
 
-  const STORAGE_KEY = "lor-inventory-demo-v1";
+  const STORAGE_KEY = "lor-inventory-demo-v2";
   const today = new Date().toISOString().slice(0, 10);
   const currentYear = new Date().getFullYear();
-  const seed = [
-    { id: "s1", date: `${currentYear}-01-08`, type: "received", item: "Winter coat", category: "Clothing", size: "M", quantity: 24, unitValue: 48, source: "Community donation", notes: "New and gently used" },
-    { id: "s2", date: `${currentYear}-01-10`, type: "received", item: "Winter coat", category: "Clothing", size: "L", quantity: 18, unitValue: 48, source: "Community donation", notes: "" },
-    { id: "s3", date: `${currentYear}-01-15`, type: "received", item: "Warm socks", category: "Clothing", size: "One size", quantity: 80, unitValue: 6, source: "Neighborhood drive", notes: "" },
-    { id: "s4", date: `${currentYear}-02-02`, type: "received", item: "Care kit", category: "Care kit", size: "One size", quantity: 30, unitValue: 22, source: "Supply partner", notes: "Standard kit" },
-    { id: "s5", date: `${currentYear}-02-11`, type: "received", item: "Hoodie", category: "Clothing", size: "S", quantity: 12, unitValue: 32, source: "Community donation", notes: "" },
-    { id: "s6", date: `${currentYear}-02-18`, type: "received", item: "Hoodie", category: "Clothing", size: "M", quantity: 20, unitValue: 32, source: "Community donation", notes: "" },
-    { id: "s7", date: `${currentYear}-03-01`, type: "received", item: "Hygiene supplies", category: "Supplies", size: "One size", quantity: 45, unitValue: 12, source: "Supply partner", notes: "" },
-    { id: "s8", date: `${currentYear}-03-09`, type: "distributed", item: "Winter coat", category: "Clothing", size: "M", quantity: 7, unitValue: 48, source: "Referral", notes: "Community referral" },
-    { id: "s9", date: `${currentYear}-03-14`, type: "distributed", item: "Warm socks", category: "Clothing", size: "One size", quantity: 26, unitValue: 6, source: "Care kit", notes: "" },
-    { id: "s10", date: `${currentYear}-03-19`, type: "distributed", item: "Care kit", category: "Care kit", size: "One size", quantity: 11, unitValue: 22, source: "Care kit", notes: "" },
-    { id: "s11", date: `${currentYear}-04-02`, type: "distributed", item: "Hoodie", category: "Clothing", size: "M", quantity: 6, unitValue: 32, source: "Referral", notes: "" },
-    { id: "s12", date: `${currentYear}-04-10`, type: "distributed", item: "Hygiene supplies", category: "Supplies", size: "One size", quantity: 14, unitValue: 12, source: "Care kit", notes: "" },
-    { id: "s13", date: `${currentYear - 1}-11-18`, type: "received", item: "Winter coat", category: "Clothing", size: "M", quantity: 10, unitValue: 45, source: "Community donation", notes: "" },
-    { id: "s14", date: `${currentYear - 1}-12-04`, type: "distributed", item: "Winter coat", category: "Clothing", size: "M", quantity: 3, unitValue: 45, source: "Referral", notes: "" },
+  const sampleInventory = [
+    ["Blankets",204,1128.12,3,1],["Books",18083,13562.25,2,1],["Childrens Bottoms",10996,76972,2,1],
+    ["Childrens Dresses",747,7753.86,1,1],["Childrens Jackets",1174,24043.52,2,1],["Childrens Pajamas",956,5238.88,2,1],
+    ["Childrens Shoes",451,3414.07,2,1],["Childrens Socks",567,907.20,2,1],["Childrens Tops",11403,70128.45,2,1],
+    ["Childrens Underwear",493,1824.10,2,1],["Diapers",1205,8736.25,5,1],["Elementary School Bookbag & Supplies",148,6660,5,1],
+    ["Mens Bottoms",1111,9776.80,3,1],["Mens Jackets",247,5352.49,3,1],["Mens Pajamas",142,969.86,3,1],
+    ["Mens Shoes",238,4907.56,3,1],["Mens Socks",476,1428,3,1],["Mens Tops",1531,15493.72,3,1],
+    ["Mens Underwear",1238,3255.94,3,1],["Middle/High School Bookbag & Supplies",66,3616.80,2,1],["Pull Ups",53,384.25,5,1],
+    ["Stuffed Animals",5948,55019,7,1],["Toiletry Kit 0-5",198,1346.40,3,1],["Toiletry Kit 6-11",184,1840,2,1],
+    ["Toiletry Kit 12-18",151,1661,2,1],["Wipes",745,1862.50,5,1],["Womens Bottoms",1064,9075.92,2,1],
+    ["Womens Dresses",654,10483.62,2,1],["Womens Jackets",249,2614.50,2,1],["Womens Pajamas",220,2310,2,1],
+    ["Womens Shoes",239,4832.58,2,1],["Womens Socks",548,739.80,2,1],["Womens Tops",2117,21424.04,2,1],
+    ["Womens Underwear",604,1902.60,2,1],
   ];
+  const seed = sampleInventory.flatMap(([item, initialCount, initialValue, quantitySub, quantityAdd], index) => {
+    const unitValue = Math.round((initialValue / initialCount) * 100) / 100;
+    const common = { item, category: "Inventory", size: "One size", unitValue, notes: "" };
+    return [
+      { ...common, id: `opening-${index}`, date: `${currentYear - 1}-12-31`, type: "opening", quantity: initialCount, source: "Sample opening balance" },
+      ...(quantitySub ? [{ ...common, id: `out-${index}`, date: `${currentYear}-01-10`, type: "distributed", quantity: quantitySub, source: "Sample quantity sub" }] : []),
+      ...(quantityAdd ? [{ ...common, id: `in-${index}`, date: `${currentYear}-01-11`, type: "received", quantity: quantityAdd, source: "Sample quantity add" }] : []),
+    ];
+  });
 
   const isValidIsoDate = (date) => {
     if (!/^\d{4}-\d{2}-\d{2}$/.test(date)) return false;
@@ -41,7 +48,7 @@
       if (saved === null) return seed.map((entry) => ({ ...entry }));
       const parsed = JSON.parse(saved);
       if (!Array.isArray(parsed) || parsed.some((entry) => !entry || typeof entry !== "object"
-        || !isValidIsoDate(entry.date) || !["received", "distributed"].includes(entry.type)
+        || !isValidIsoDate(entry.date) || !["opening", "received", "distributed"].includes(entry.type)
         || typeof entry.item !== "string" || !entry.item.trim()
         || !Number.isSafeInteger(entry.quantity) || entry.quantity < 1
         || typeof entry.size !== "string"
@@ -84,9 +91,9 @@
         row = { item: entry.item, category: entry.category || "Uncategorized", size: entry.size || "Unspecified", quantity: 0, unitValue: 0, valueDate: "", received: 0, distributed: 0 };
         groups.set(key, row);
       }
-      if (entry.type === "received") {
+      if (entry.type !== "distributed") {
         row.quantity += entry.quantity;
-        row.received += entry.quantity;
+        if (entry.type === "received") row.received += entry.quantity;
       } else {
         row.quantity -= entry.quantity;
         row.distributed += entry.quantity;
@@ -129,7 +136,7 @@
       const width = Math.max(4, Math.min(100, row.quantity / 60 * 100));
       return `<tr><td>${escapeHtml(row.item)}<small class="cell-sub">${escapeHtml(row.size)}</small></td><td><span class="quantity-pill ${low ? "low" : ""}">${row.quantity}</span></td><td class="money">${money(row.unitValue)}</td><td class="money">${money(row.quantity * row.unitValue)}</td><td><div class="stock-track"><div class="stock-fill ${low ? "low" : ""}" style="width:${width}%"></div></div></td></tr>`;
     }).join("") : `<tr><td colspan="5">No stock on hand.</td></tr>`;
-    $("#recentActivity").innerHTML = [...entries].sort((a, b) => b.date.localeCompare(a.date) || String(b.id).localeCompare(String(a.id))).slice(0, 5).map(activityMarkup).join("") || `<div class="empty-state">No activity yet.</div>`;
+    $("#recentActivity").innerHTML = [...entries].filter((entry) => entry.type !== "opening").sort((a, b) => b.date.localeCompare(a.date) || String(b.id).localeCompare(String(a.id))).slice(0, 5).map(activityMarkup).join("") || `<div class="empty-state">No activity yet.</div>`;
   }
 
   function activityMarkup(entry) {
@@ -144,14 +151,56 @@
 
   function renderInventory() {
     const query = $("#inventorySearch").value.trim().toLocaleLowerCase();
-    const category = $("#categoryFilter").value;
-    const rows = groupStock().filter((row) => (category === "all" || row.category === category) && `${row.item} ${row.size} ${row.category}`.toLocaleLowerCase().includes(query)).sort((a, b) => a.item.localeCompare(b.item) || a.size.localeCompare(b.size));
-    $("#inventoryCount").textContent = plural(rows.length, "item-size");
-    $("#inventoryRows").innerHTML = rows.map((row) => {
-      const low = row.quantity < 10;
-      return `<tr><td>${escapeHtml(row.item)}</td><td>${escapeHtml(row.category)}</td><td>${escapeHtml(row.size)}</td><td>${row.quantity}</td><td class="money">${money(row.unitValue)}</td><td class="money">${money(row.quantity * row.unitValue)}</td><td><span class="status-label ${low ? "low-label" : ""}"><i></i>${row.quantity <= 0 ? "Out of stock" : low ? "Low stock" : "In stock"}</span></td></tr>`;
-    }).join("");
-    $("#inventoryEmpty").classList.toggle("hidden", rows.length !== 0);
+    const year = currentYear;
+    const startDate = `${year}-01-01`;
+    const endDate = `${year}-12-31`;
+    const opening = aggregateItems(groupStock(entries.filter((entry) => entry.date < startDate)));
+    const closing = aggregateItems(groupStock(entries.filter((entry) => entry.date <= endDate)));
+    const movement = new Map();
+    for (const entry of entries.filter((record) => record.date >= startDate && record.date <= endDate)) {
+      const key = entry.item.toLocaleLowerCase();
+      const totals = movement.get(key) || { added: 0, subtracted: 0 };
+      if (entry.type === "received") totals.added += entry.quantity;
+      else if (entry.type === "distributed") totals.subtracted += entry.quantity;
+      movement.set(key, totals);
+    }
+    const itemNames = new Set([...opening.keys(), ...closing.keys(), ...movement.keys()]);
+    const rows = [...itemNames].map((key) => {
+      const initial = opening.get(key) || { item: closing.get(key)?.item || movement.get(key)?.item || key, count: 0, value: 0 };
+      const current = closing.get(key) || { item: initial.item, count: 0, value: 0 };
+      const changes = movement.get(key) || { added: 0, subtracted: 0 };
+      return { item: current.item || initial.item, initialCount: initial.count, initialValue: initial.value, added: changes.added, subtracted: changes.subtracted, currentCount: current.count, currentValue: current.value };
+    }).sort((a, b) => a.item.localeCompare(b.item));
+    const filteredRows = rows.filter((row) => row.item.toLocaleLowerCase().includes(query));
+    $("#inventoryCount").textContent = `${plural(filteredRows.length, "item")} · Lowcountry`;
+    $("#inventoryRows").innerHTML = filteredRows.map((row) => `<tr><td>${escapeHtml(row.item)}</td><td>${row.initialCount.toLocaleString()}</td><td class="money">${money(row.initialValue)}</td><td>${row.subtracted.toLocaleString()}</td><td>${row.added.toLocaleString()}</td><td>${row.currentCount.toLocaleString()}</td><td class="money">${money(row.currentValue)}</td></tr>`).join("");
+    $("#inventoryEmpty").classList.toggle("hidden", filteredRows.length !== 0);
+    const totals = rows.reduce((result, row) => ({
+      initialCount: result.initialCount + row.initialCount,
+      initialValue: result.initialValue + row.initialValue,
+      added: result.added + row.added,
+      subtracted: result.subtracted + row.subtracted,
+      currentCount: result.currentCount + row.currentCount,
+      currentValue: result.currentValue + row.currentValue,
+    }), { initialCount: 0, initialValue: 0, added: 0, subtracted: 0, currentCount: 0, currentValue: 0 });
+    $("#inventorySummaryYear").textContent = `Opening balance and activity for ${year} · Lowcountry`;
+    $("#inventoryInitialCount").textContent = totals.initialCount.toLocaleString();
+    $("#inventorySummaryAdded").textContent = totals.added.toLocaleString();
+    $("#inventorySummarySubtracted").textContent = totals.subtracted.toLocaleString();
+    $("#inventorySummaryCount").textContent = totals.currentCount.toLocaleString();
+    $("#inventorySummaryValue").textContent = money(totals.currentValue);
+  }
+
+  function aggregateItems(groups) {
+    const aggregated = new Map();
+    for (const row of groups) {
+      const key = row.item.toLocaleLowerCase();
+      const result = aggregated.get(key) || { item: row.item, count: 0, value: 0 };
+      result.count += row.quantity;
+      result.value += row.quantity * row.unitValue;
+      aggregated.set(key, result);
+    }
+    return aggregated;
   }
 
   function renderActivity() {
@@ -159,7 +208,7 @@
     const from = $("#dateFrom").value;
     const to = $("#dateTo").value;
     const type = $("#activityType").value;
-    const filtered = [...entries].filter((entry) => (!year || entry.date.startsWith(`${year}-`)) && (!from || entry.date >= from) && (!to || entry.date <= to) && (type === "all" || entry.type === type)).sort((a, b) => b.date.localeCompare(a.date) || String(b.id).localeCompare(String(a.id)));
+    const filtered = [...entries].filter((entry) => entry.type !== "opening" && (!year || entry.date.startsWith(`${year}-`)) && (!from || entry.date >= from) && (!to || entry.date <= to) && (type === "all" || entry.type === type)).sort((a, b) => b.date.localeCompare(a.date) || String(b.id).localeCompare(String(a.id)));
     $("#activityCount").textContent = plural(filtered.length, "record");
     $("#activityRows").innerHTML = filtered.map((entry) => `<tr><td>${formatDate(entry.date)}</td><td><span class="status-label ${entry.type === "distributed" ? "low-label" : ""}"><i></i>${entry.type === "received" ? "Received" : "Distributed"}</span></td><td>${escapeHtml(entry.item)}</td><td>${escapeHtml(entry.size || "One size")}</td><td>${entry.quantity}</td><td class="money">${money(entry.unitValue || 0)}</td><td class="money">${money(entry.quantity * (entry.unitValue || 0))}</td><td>${escapeHtml([entry.source, entry.notes].filter(Boolean).join(" · ") || "—")}</td></tr>`).join("");
     $("#activityEmpty").classList.toggle("hidden", filtered.length !== 0);
@@ -334,7 +383,7 @@
       if (record?.errors.length) continue;
       const key = `${entry.item.toLocaleLowerCase()}|${entry.size.toLocaleLowerCase()}`;
       const available = simulated.get(key) || 0;
-      if (entry.type === "received") simulated.set(key, available + entry.quantity);
+      if (entry.type !== "distributed") simulated.set(key, available + entry.quantity);
       else if (entry.quantity > available && record) record.errors.push(`Insufficient stock on ${entry.date} (available: ${available})`);
       else if (entry.quantity > available) simulated.set(key, available - entry.quantity);
       else simulated.set(key, available - entry.quantity);
@@ -411,7 +460,6 @@
     });
     $("#dashboardYear").addEventListener("change", renderDashboard);
     $("#inventorySearch").addEventListener("input", renderInventory);
-    $("#categoryFilter").addEventListener("change", renderInventory);
     ["activityYear", "dateFrom", "dateTo", "activityType"].forEach((id) => $(`#${id}`).addEventListener("change", renderActivity));
     $("#clearActivityFilters").addEventListener("click", () => {
       $("#activityYear").value = String(currentYear);
@@ -422,7 +470,6 @@
     });
     $("#reportYear").addEventListener("change", renderReport);
     $("#quickAdd").addEventListener("click", () => openActivity("received"));
-    $("#addStock").addEventListener("click", () => openActivity("received"));
     $("#activityAdd").addEventListener("click", () => openActivity());
     $("#closeDialog").addEventListener("click", () => $("#activityDialog").close());
     $("#cancelDialog").addEventListener("click", () => $("#activityDialog").close());
